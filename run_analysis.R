@@ -98,8 +98,7 @@ read.dataset <- function(){
 
 
 
-#' melt dataset for individual measures and group it by
-#' Activity, Subject and variable columns
+#' Calculate mean for each variable using Activity and Subject as key columns
 #'
 #' @param table dataframe containing key and variable columns
 #'
@@ -110,7 +109,11 @@ calc.means <- function(table){
   table %>% 
     melt(id.vars = c("Activity", "Subject")) %>%
     group_by(Activity, Subject, variable) %>%
-    summarize(mean = mean(value))
+    summarize(mean = mean(value)) %>%
+    dcast(Activity + Subject ~ variable, mean, value.var = "mean")
 }
+
+ds <- read.dataset()
+tidy <- calc.means(ds)
 
 
